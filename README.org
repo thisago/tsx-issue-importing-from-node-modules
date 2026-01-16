@@ -1,4 +1,4 @@
-#+title: tsx-importing-from-node-modules
+#+title: tsx-issue-importing-from-node-modules
 #+auto_tangle: t
 
 When any of the parent directories are named =node_modules=, ~tsx~ doesn't loads =tsconfig.json=.
