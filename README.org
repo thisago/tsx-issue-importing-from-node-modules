@@ -9,7 +9,7 @@ Setup of the example in a dir with =node_modules/= as parent.
 mkdir -p node_modules/my-lib/
 #+end_src
 
-Defining the tsconfig. In this case, configuring the =@/= path.
+Defining the =node_modules/my-lib/tsconfig.json=. In this case, configuring the =@/= path as example.
 #+begin_src json :tangle node_modules/my-lib/tsconfig.json :exports both
 {
   "$schema": "http://json.schemastore.org/tsconfig",
@@ -24,12 +24,12 @@ Defining the tsconfig. In this case, configuring the =@/= path.
 }
 #+end_src
 
-Defining a dummy module to be imported:
+Defining a dummy module (=node_modules/my-lib/add.ts=) to be imported by entry-point:
 #+begin_src typescript :tangle node_modules/my-lib/add.ts :exports both :eval never
 export function add(a, b) { return a + b; }
 #+end_src
 
-Entrypoint using the tsconfig
+Entrypoint, which relies on tsconfig, =node_modules/my-lib/index.ts=:
 #+begin_src typescript :tangle node_modules/my-lib/index.ts :exports both :eval never
 import { add } from "@/add";
 
@@ -53,7 +53,7 @@ node:internal/modules/cjs/loader:1225
 
 Error: Cannot find module '@/add'
 Require stack:
-- /home/user/Documents/repos/tsx-importing-from-node-modules/node_modules/my-lib/index.ts
+- /home/user/Documents/repos/tsx-issue-importing-from-node-modules/node_modules/my-lib/index.ts
     at node:internal/modules/cjs/loader:1225:15
     at nextResolveSimple (/home/user/.npm/_npx/fd45a72a545557e9/node_modules/tsx/dist/register-D46fvsV_.cjs:4:1004)
     at /home/user/.npm/_npx/fd45a72a545557e9/node_modules/tsx/dist/register-D46fvsV_.cjs:3:2630
@@ -66,7 +66,7 @@ Require stack:
     at wrapModuleLoad (node:internal/modules/cjs/loader:220:24) {
   code: 'MODULE_NOT_FOUND',
   requireStack: [
-    '/home/user/Documents/repos/tsx-importing-from-node-modules/node_modules/my-lib/index.ts'
+    '/home/user/Documents/repos/tsx-issue-importing-from-node-modules/node_modules/my-lib/index.ts'
   ]
 }
 
