@@ -1,0 +1,84 @@
+#+title: tsx-importing-from-node-modules
+#+auto_tangle: t
+
+* Reproducing
+Setup of the example in a dir with =node_modules/= as parent.
+#+begin_src bash :results none :exports code
+mkdir -p node_modules/my-lib/
+#+end_src
+
+Defining the tsconfig. In this case, configuring the =@/= path.
+#+begin_src json :tangle node_modules/my-lib/tsconfig.json :exports both
+{
+  "$schema": "http://json.schemastore.org/tsconfig",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "*"
+      ]
+    }
+  }
+}
+#+end_src
+
+Defining a dummy module to be imported:
+#+begin_src typescript :tangle node_modules/my-lib/add.ts :exports both :eval never
+export function add(a, b) { return a + b; }
+#+end_src
+
+Entrypoint using the tsconfig
+#+begin_src typescript :tangle node_modules/my-lib/index.ts :exports both :eval never
+import { add } from "@/add";
+
+console.log("1 + 2 = ", add(1, 2));
+#+end_src
+
+Running:
+#+begin_src bash :results pp :exorts both
+cd node_modules/my-lib/
+npx tsx --version
+npx tsx index.ts 2>&1
+#+end_src
+
+#+RESULTS:
+#+begin_example
+tsx v4.21.0
+node v22.14.0
+node:internal/modules/cjs/loader:1225
+  const err = new Error(message);
+              ^
+
+Error: Cannot find module '@/add'
+Require stack:
+- /home/user/Documents/repos/tsx-importing-from-node-modules/node_modules/my-lib/index.ts
+    at node:internal/modules/cjs/loader:1225:15
+    at nextResolveSimple (/home/user/.npm/_npx/fd45a72a545557e9/node_modules/tsx/dist/register-D46fvsV_.cjs:4:1004)
+    at /home/user/.npm/_npx/fd45a72a545557e9/node_modules/tsx/dist/register-D46fvsV_.cjs:3:2630
+    at /home/user/.npm/_npx/fd45a72a545557e9/node_modules/tsx/dist/register-D46fvsV_.cjs:3:1542
+    at resolveTsPaths (/home/user/.npm/_npx/fd45a72a545557e9/node_modules/tsx/dist/register-D46fvsV_.cjs:4:760)
+    at /home/user/.npm/_npx/fd45a72a545557e9/node_modules/tsx/dist/register-D46fvsV_.cjs:4:1102
+    at m._resolveFilename (file:///home/user/.npm/_npx/fd45a72a545557e9/node_modules/tsx/dist/register-B7jrtLTO.mjs:1:789)
+    at Function._load (node:internal/modules/cjs/loader:1055:27)
+    at TracingChannel.traceSync (node:diagnostics_channel:322:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:220:24) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    '/home/user/Documents/repos/tsx-importing-from-node-modules/node_modules/my-lib/index.ts'
+  ]
+}
+
+Node.js v22.14.0
+#+end_example
+
+But expected to load tsconfig same as it does for when not inside a =node_modules= dir:
+#+begin_src bash :results pp :exports both
+test -d otherDir && rm -r otherDir
+cp -r node_modules/my-lib/ otherDir
+
+cd otherDir/
+npx tsx index.ts 2>&1
+#+end_src
+
+#+RESULTS:
+: 1 + 2 =  3
