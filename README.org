@@ -1,6 +1,8 @@
 #+title: tsx-importing-from-node-modules
 #+auto_tangle: t
 
+When any of the parent directories are named =node_modules=, ~tsx~ doesn't loads =tsconfig.json=.
+
 * Reproducing
 Setup of the example in a dir with =node_modules/= as parent.
 #+begin_src bash :results none :exports code
