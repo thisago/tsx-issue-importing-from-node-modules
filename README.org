@@ -35,7 +35,7 @@ console.log("1 + 2 = ", add(1, 2));
 #+end_src
 
 Running:
-#+begin_src bash :results pp :exorts both
+#+begin_src bash :results pp :exports both
 cd node_modules/my-lib/
 npx tsx --version
 npx tsx index.ts 2>&1
